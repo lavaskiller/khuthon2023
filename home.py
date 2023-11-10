@@ -2,6 +2,7 @@ import streamlit as st
 
 
 def app():
+    st.subheader("ThinkBridge : ")
     image = 'logo.png'
 
     # Streamlit 컬럼을 사용하여 이미지를 중앙에 배치
@@ -9,4 +10,4 @@ def app():
     with col2:
         st.image(image)
         
-    st.subheader("ThinkBridge : ")
+    
