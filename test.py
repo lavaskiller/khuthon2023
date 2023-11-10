@@ -55,7 +55,7 @@ def app():
         if choice == "로그인":
             username = st.text_input("이름")
 
-            if st.button("Create my account"):
+            if st.button("계정생성"):
                 create_user(email, st.session_state.password, username)
 
                 st.success("계정이 성공적으로 생성되었습니다.")
