@@ -20,7 +20,7 @@ def app():
         sys = deta.Base("sys_log")
         sys2 = deta.Base("sys2_log")
         chat = deta.Base("chat_log")
-        user = deta.Base("user_db")
+        user = deta.Base("users_db")
 
         # Initialize chat history
         if not [
