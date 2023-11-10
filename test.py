@@ -9,7 +9,7 @@ def app():
     db = deta.Base("users_db")
 
     def create_user(email, password, username):
-        return db.put({"key": email, "name": username, "password": password})
+        return db.put({"key": email, "name": username, "password": password, "state": "begin"})
 
     st.title("Welcome to :violet[ThinkingBridge] :sunglasses:")
 

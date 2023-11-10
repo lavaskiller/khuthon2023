@@ -20,7 +20,7 @@ def app():
         sys = deta.Base("sys_log")
         sys2 = deta.Base("sys2_log")
         chat = deta.Base("chat_log")
-        status = deta.Base("state")
+        user = deta.Base("user_db")
 
         # Initialize chat history
         if not [
@@ -35,7 +35,6 @@ def app():
                     "content": "Hi!",
                 }
             )
-            status.put({"key": st.session_state.useremail, "state": "begin"})
 
         # Display chat messages from history on app rerun
         for message in [
@@ -82,17 +81,17 @@ def app():
                 message_placeholder = st.empty()
                 full_response = ""
 
-            if status.get(st.session_state.useremail)["state"] == "begin":
+            if user.get(st.session_state.useremail)["state"] == "begin":
                 gpt_prompt = [
                     {
                         "role": "system",
-                        "content": "Analyze the user's question to identify the core topic, which we will define as main_key. Think of the correct answer to the question and define it as anw. [You should not directly reveal anw.] Remember, you are an educator, not just a provider of answers. Your role is to guide the student to discover anw on their own. To achieve this, you can explain the essential concepts necessary for understanding anw or pose guiding questions that lead to anw. Your response to the student will be defined as resp and generated in Korean. Output main_key, anw, resp in JSON format. Before finalizing the output, ensure it meets the following conditions: (1) Do not reveal anw in resp, (2) the output must be in JSON format, and (3) it must consist of main_key, anw, and resp. (4) resp must be written with korean",
+                        "content": "Analyze the user's question to identify the core topic, which we will define as main_key. Think of the correct answer to the question and define it as anw. [You should not directly reveal anw.] Remember, you are an educator, not just a provider of answers. Your role is to guide the student to discover anw on their own. To achieve this, you can explain the essential concepts necessary for understanding anw or pose guiding questions that lead to anw. Your response to the student will be defined as resp. Output main_key, anw, resp in JSON format. Before finalizing the output, ensure it meets the following conditions: (1) Do not reveal anw in resp, (2) the output must be in JSON format, and (3) it must consist of main_key, anw, and resp.",
                     }
                 ]
-                status.update({"state": "lead"}, st.session_state.useremail)
+                user.update({"state": "lead"}, st.session_state.useremail)
                 gpt_prompt.append({"role": "user", "content": user_input})
 
-            elif status.get(st.session_state.useremail)["state"] == "lead":
+            elif user.get(st.session_state.useremail)["state"] == "lead":
                 gpt_prompt = [
                     {"content": item["content"], "role": item["role"]}
                     for item in sys.fetch({"user": st.session_state.useremail}).items
@@ -100,7 +99,7 @@ def app():
                 gpt_prompt.append(
                     {
                         "role": "user",
-                        "content": "If you assess that the user's response has sufficiently approached anw to the extent that no further guiding questions are necessary, store 'finish_session' in the flag and save a simplified explanation of anw and the user's response in resp in Korean. In all other cases, if you determine that additional guiding questions are needed, store 'keep_session' in the flag and save either an explanation of the key concepts needed to understand anw or the necessary guiding questions to approach anw in resp in Korean. Output understand, flag, resp in JSON format. Before finalizing the output, ensure it meets these conditions: (1) In cases where the flag is 'keep_session', resp must not contain anw, (2) In cases where the flag is 'finish_session', resp must have the right answer and anw in it, (3) the output must be in JSON format, and (4) it must consist of understand, flag, and resp. (5) res must be written with Korean. User's response follows : "
+                        "content": "If you assess that the user's response has sufficiently approached anw to the extent that no further guiding questions are necessary, store 'finish_session' in the flag and save a simplified explanation of anw and the user's response in resp. In all other cases, if you determine that additional guiding questions are needed, store 'keep_session' in the flag and save either an explanation of the key concepts needed to understand anw or the necessary guiding questions to approach anw in resp. Output understand, flag, resp in JSON format. Before finalizing the output, ensure it meets these conditions: (1) In cases where the flag is 'keep_session', resp must not contain anw, (2) In cases where the flag is 'finish_session', resp must have the right answer and anw in it, (3) the output must be in JSON format, and (4) it must consist of understand, flag, and resp. User's response follows : "
                         + user_input,
                     }
                 )
@@ -119,7 +118,7 @@ def app():
 
             try:
                 if json.loads(full_response)["flag"] == "finish_session":
-                    status.update({"state": "begin"}, st.session_state.useremail)
+                    user.update({"state": "begin"}, st.session_state.useremail)
                     for item in sys.fetch({"user": st.session_state.useremail}).items:
                         sys.delete(item["key"])
             except:
