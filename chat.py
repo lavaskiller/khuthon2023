@@ -32,7 +32,7 @@ def app():
                     "key": key(),
                     "user": st.session_state.useremail,
                     "role": "assistant",
-                    "content": "Hi!",
+                    "content": "안녕하세요, khuras입니다. 질문을 입력해주세요.",
                 }
             )
 
