@@ -11,7 +11,7 @@ def app():
     def create_user(email, password, username):
         return db.put({"key": email, "name": username, "password": password, "state": "begin", "cnt_qus": 1})
 
-    st.title("violet[ThinkingBridge] 에 방문하신 것을 환영합니다! :sunglasses:")
+    st.title("Welcome to :violet[ThinkingBridge] :sunglasses:")
 
     if "username" not in st.session_state:
         st.session_state.username = ""
@@ -22,7 +22,7 @@ def app():
         user = db.get(email)
 
         if user is None:
-            st.warning("Login Failed")
+            st.warning("로그인 실패")
         elif (user["password"] == st.session_state.password):
             st.session_state.username = user["name"]
             st.session_state.useremail = user["key"]
@@ -33,7 +33,7 @@ def app():
             st.session_state.signedout = True
             st.session_state.signout = True
         else:
-            st.warning("Wrong password")
+            st.warning("잘못된 비밀번호입니다.")
 
     def t():
         st.session_state.signout = False
@@ -48,27 +48,24 @@ def app():
     if not st.session_state[
         "signedout"
     ]:  # only show if the state is False, hence the button has never been clicked
-        choice = st.selectbox("Login/Signup", ["Login", "Sign up"])
-        email = st.text_input("Email Address")
-        st.session_state.password = st.text_input("Password", type="password")
+        choice = st.selectbox("로그인/회원가입", ["로그인", "회원가입"])
+        email = st.text_input("이메일")
+        st.session_state.password = st.text_input("비밀번호", type="password")
 
-        if choice == "Sign up":
+        if choice == "로그인":
             username = st.text_input("Enter  your unique username")
 
             if st.button("Create my account"):
                 create_user(email, st.session_state.password, username)
 
-                st.success("Account created successfully!")
-                st.markdown("Please Login using your email and password")
+                st.success("계정이 성공적으로 생성되었습니다.")
+                st.markdown("이메일과 비밀번호를 이용하여 로그인을 시도해주세요.")
                 st.balloons()
         else:
             # st.button('Login', on_click=f)
-            st.button("Login", on_click=f)
+            st.button("로그인", on_click=f)
 
     if st.session_state.signout:
-        st.text("Name " + st.session_state.username)
-        st.text("Email id: " + st.session_state.useremail)
-        st.button("Sign out", on_click=t)
-
-    def ap():
-        st.write("Posts")
+        st.text("이름 " + st.session_state.username)
+        st.text("이메일: " + st.session_state.useremail)
+        st.button("로그아웃", on_click=t)
