@@ -11,7 +11,7 @@ def app():
         return datetime.now().strftime("%Y%m%d%H%M%S") + st.session_state.useremail
 
     if not st.session_state.signout:
-        st.title("Please login")
+        st.title("로그인 해주세요")
     else:
         st.title("Welcome! " + st.session_state.username + ",")
 

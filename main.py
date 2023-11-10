@@ -21,7 +21,7 @@ class MultiApp:
         with st.sidebar:
             app = option_menu(
                 menu_title="ThinkingBridge ",
-                options=["Home", "Account", "Chat", "about"],
+                options=["홈", "계정", "채팅", "제작"],
                 icons=[
                     "house-fill",
                     "person-circle",
@@ -47,13 +47,13 @@ class MultiApp:
                 },
             )
 
-        if app == "Home":
+        if app == "홈":
             home.app()
-        if app == "Account":
+        if app == "계정":
             test.app()
-        if app == "Chat":
+        if app == "채팅":
             chat.app()
-        if app == "about":
+        if app == "제작":
             about.app()
 
     run()
