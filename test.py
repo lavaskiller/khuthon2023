@@ -53,7 +53,7 @@ def app():
         st.session_state.password = st.text_input("비밀번호", type="password")
 
         if choice == "로그인":
-            username = st.text_input("Enter  your unique username")
+            username = st.text_input("이름")
 
             if st.button("Create my account"):
                 create_user(email, st.session_state.password, username)
