@@ -9,7 +9,7 @@ def app():
     db = deta.Base("users_db")
 
     def create_user(email, password, username):
-        return db.put({"key": email, "name": username, "password": password, "state": "begin"})
+        return db.put({"key": email, "name": username, "password": password, "state": "begin", "cnt_qus": 1})
 
     st.title("Welcome to :violet[ThinkingBridge] :sunglasses:")
 
@@ -23,7 +23,7 @@ def app():
 
         if user is None:
             st.warning("Login Failed")
-        elif user["password"] == st.session_state.password:
+        elif (user["password"] == st.session_state.password):
             st.session_state.username = user["name"]
             st.session_state.useremail = user["key"]
 
