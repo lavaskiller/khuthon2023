@@ -1,5 +1,5 @@
 import streamlit as st
-import openai, test, json
+import openai, test, json, time
 from datetime import datetime
 from deta import Deta
 
@@ -80,6 +80,7 @@ def app():
             with st.chat_message("assistant"):
                 message_placeholder = st.empty()
                 full_response = ""
+                
 
             if user.get(st.session_state.useremail)["state"] == "begin":
                 gpt_prompt = [
@@ -106,14 +107,27 @@ def app():
 
             print(gpt_prompt)
 
-            for response in openai.ChatCompletion.create(
+            # for response in openai.ChatCompletion.create(
+            #     model="gpt-4",
+            #     messages=gpt_prompt,
+            #     stream=True,
+            # ):
+            #     full_response += response.choices[0].delta.get("content", "")
+            #     message_placeholder.markdown(full_response + "▌ ")
+            
+            for _ in range(10):
+                message_placeholder.text("/" * 10)
+                time.sleep(0.1)
+                message_placeholder.text("-" * 10)
+                time.sleep(0.1)
+                message_placeholder.text("\\" * 10)
+                time.sleep(0.1)
+            
+            full_response = openai.ChatCompletion.create(
                 model="gpt-4",
                 messages=gpt_prompt,
                 stream=True,
-            ):
-                full_response += response.choices[0].delta.get("content", "")
-                message_placeholder.markdown(full_response + "▌ ")
-
+            )
             message_placeholder.markdown(full_response)
 
             try:
