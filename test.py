@@ -11,7 +11,7 @@ def app():
     def create_user(email, password, username):
         return db.put({"key": email, "name": username, "password": password, "state": "begin", "cnt_qus": 1})
 
-    st.title("violet[ThinkingBridge]에 방문하신 것을 환영합니다! :sunglasses:")
+    st.title("violet[ThinkingBridge] 에 방문하신 것을 환영합니다! :sunglasses:")
 
     if "username" not in st.session_state:
         st.session_state.username = ""
