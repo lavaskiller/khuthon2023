@@ -52,7 +52,7 @@ def app():
         email = st.text_input("이메일")
         st.session_state.password = st.text_input("비밀번호", type="password")
 
-        if choice == "로그인":
+        if choice == "회원가입":
             username = st.text_input("이름")
 
             if st.button("계정생성"):
