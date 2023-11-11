@@ -112,14 +112,14 @@ def app():
             #     full_response += response.choices[0].delta.get("content", "")
             #     message_placeholder.markdown(full_response + "▌ ")
             
-            with st.spinner("대화가 생성되는 중입니다..."):
+            with st.spinner("답변이 생성되는 중입니다..."):
                 try:
                     response = openai.ChatCompletion.create(
                         model="gpt-4",
                         messages=gpt_prompt,
                         stream=False
                     )
-                    full_response = response["choices"][0]["content"]
+                    full_response = response["choices"][0]["message"]["content"]
                 except Exception as e:
                     st.error("응답 처리 중 오류 발생: {}".format(e))
                     raise
