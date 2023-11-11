@@ -123,11 +123,12 @@ def app():
                 message_placeholder.text("\\" * 10)
                 time.sleep(0.1)
             
-            full_response = openai.ChatCompletion.create(
+            response = openai.ChatCompletion.create(
                 model="gpt-4",
                 messages=gpt_prompt,
                 stream=True,
-            )["choices"][0]["message"]["content"]
+            )
+            full_response = response["choices"][0]["message"]["content"]
             message_placeholder.markdown(full_response)
 
             try:
