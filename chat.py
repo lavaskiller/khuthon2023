@@ -127,7 +127,7 @@ def app():
                 model="gpt-4",
                 messages=gpt_prompt,
                 stream=True,
-            )
+            )["choices"][0]["message"]["content"]
             message_placeholder.markdown(full_response)
 
             try:
