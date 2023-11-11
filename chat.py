@@ -115,19 +115,17 @@ def app():
             #     full_response += response.choices[0].delta.get("content", "")
             #     message_placeholder.markdown(full_response + "▌ ")
             
-            for _ in range(10):
-                message_placeholder.text("/" * 10)
-                time.sleep(0.1)
-                message_placeholder.text("-" * 10)
-                time.sleep(0.1)
-                message_placeholder.text("\\" * 10)
-                time.sleep(0.1)
-            
-            response = openai.ChatCompletion.create(
-                model="gpt-4",
-                messages=gpt_prompt,
-            )
-            full_response = response["choices"][0]["message"]["content"]
+            with st.spinner("대화가 생성되는 중입니다..."):
+                try:
+                    response = openai.ChatCompletion.create(
+                        model="gpt-4",
+                        messages=gpt_prompt,
+                        stream=False
+                    )
+                    full_response = response["choices"][0]["text"]
+                except Exception as e:
+                    st.error("응답 처리 중 오류 발생: {}".format(e))
+                    raise
             message_placeholder.markdown(json.loads(full_response)["resp"])
 
             try:
