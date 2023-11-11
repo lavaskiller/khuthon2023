@@ -128,7 +128,7 @@ def app():
                 messages=gpt_prompt,
             )
             full_response = response["choices"][0]["message"]["content"]
-            message_placeholder.markdown(full_response)
+            message_placeholder.markdown(json.loads(full_response)["resp"])
 
             try:
                 if json.loads(full_response)["flag"] == "finish_session":
