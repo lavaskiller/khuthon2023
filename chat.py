@@ -77,9 +77,6 @@ def app():
                 st.markdown(prompt)
 
             # Display assistant response in chat message container
-            with st.chat_message("assistant"):
-                message_placeholder = st.empty()
-                full_response = ""
                 
 
             if user.get(st.session_state.useremail)["state"] == "begin":
@@ -122,11 +119,13 @@ def app():
                         messages=gpt_prompt,
                         stream=False
                     )
-                    full_response = response["choices"][0]["text"]
+                    full_response = response["choices"][0]["content"]
                 except Exception as e:
                     st.error("응답 처리 중 오류 발생: {}".format(e))
                     raise
-            message_placeholder.markdown(json.loads(full_response)["resp"])
+            
+            with st.chat_message("assistant"):
+                st.markdown(json.loads(full_response)["resp"])
 
             try:
                 if json.loads(full_response)["flag"] == "finish_session":
