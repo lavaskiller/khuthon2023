@@ -23,6 +23,7 @@ def app():
                 "password": password,
                 "state": "begin",
                 "cnt_qus": 1,
+                "uses": 0,
             }
         )
 

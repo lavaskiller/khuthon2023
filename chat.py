@@ -77,7 +77,6 @@ def app():
                 st.markdown(prompt)
 
             # Display assistant response in chat message container
-                
 
             if user.get(st.session_state.useremail)["state"] == "begin":
                 gpt_prompt = [
@@ -111,27 +110,37 @@ def app():
             # ):
             #     full_response += response.choices[0].delta.get("content", "")
             #     message_placeholder.markdown(full_response + "▌ ")
-            
+
             with st.spinner("답변이 생성되는 중입니다..."):
                 try:
                     response = openai.ChatCompletion.create(
-                        model="gpt-4",
-                        messages=gpt_prompt,
-                        stream=False
+                        model="gpt-4", messages=gpt_prompt, stream=False
                     )
                     full_response = response["choices"][0]["message"]["content"]
+                    user.update(
+                        {"uses": user.get(st.session_state.useremail)["uses"] + 1},
+                        st.session_state.useremail,
+                    )
                 except Exception as e:
                     st.error("응답 처리 중 오류 발생: {}".format(e))
                     raise
-            
+
             with st.chat_message("assistant"):
                 st.markdown(json.loads(full_response)["resp"])
 
             try:
                 if json.loads(full_response)["flag"] == "finish_session":
                     user.update({"state": "begin"}, st.session_state.useremail)
+                    user.update(
+                        {
+                            "cnt_qus": user.get(st.session_state.useremail)["cnt_qus"]
+                            + 1
+                        },
+                        st.session_state.useremail,
+                    )
                     for item in sys.fetch({"user": st.session_state.useremail}).items:
                         sys.delete(item["key"])
+
             except:
                 print("Failed to")
 
