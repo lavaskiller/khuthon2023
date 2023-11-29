@@ -36,7 +36,7 @@ def app():
 
     def f():
         try:
-            user = db.get(email)
+            user = db.get(email.lower())
         except:
             st.warning("로그인 실패")
 
