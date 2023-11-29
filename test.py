@@ -16,16 +16,32 @@ def app():
     db = deta.Base("users_db")
 
     def create_user(email, password, username):
-        return db.put(
-            {
-                "key": email.lower(),
-                "name": username,
-                "password": password,
-                "state": "begin",
-                "cnt_qus": 1,
-                "uses": 0,
-            }
-        )
+        user = db.get(email.lower())
+
+        if user is None:
+            db.put(
+                {
+                    "key": email.lower(),
+                    "name": username,
+                    "password": password,
+                    "state": "begin",
+                    "cnt_qus": 1,
+                    "uses": 0,
+                }
+            )
+            return True
+        else:
+            db.put(
+                {
+                    "key": email.lower(),
+                    "name": username,
+                    "password": password,
+                    "state": user["state"],
+                    "cnt_qus": user["cnt_qus"],
+                    "uses": user["uses"],
+                }
+            )
+            return False
 
     st.title("Welcome to :violet[ThinkingBridge] :sunglasses:")
 
@@ -38,7 +54,7 @@ def app():
         try:
             user = db.get(email.lower())
         except:
-            st.warning("로그인 실패")
+            st.error("로그인 실패")
 
         if user is None:
             st.warning("로그인 실패")
@@ -164,12 +180,18 @@ def app():
                     # 인증번호 확인
                     if verify_button and st.session_state.otp == rec_otp:
                         with st.spinner("계정 생성중..."):
-                            create_user(
+                            if create_user(
                                 email.lower(), st.session_state.password, username
-                            )
-                            st.success("계정이 성공적으로 생성되었습니다.")
-                            st.markdown("이메일과 비밀번호를 이용하여 로그인을 시도해주세요.")
-                            st.balloons()
+                            ):
+                                st.success("계정이 성공적으로 생성되었습니다.")
+                                st.markdown("이메일과 비밀번호를 이용하여 로그인을 시도해주세요.")
+                                st.balloons()
+                            else:
+                                st.warning(
+                                    "회원가입 이력이 존재하는 이메일입니다. 입력하신 비밀번호와 이름으로 변경되었습니다."
+                                )
+                                st.markdown("변경된 비밀번호를 이용하여 로그인을 시도해주세요.")
+
                             # 타이머 및 OTP 초기화
                             st.session_state.otp = None
                             st.session_state.otp_time = 5
