@@ -168,9 +168,9 @@ def app():
                     elif verify_button:
                         st.warning("인증번호를 정확히 기입해주세요.")
                         st.session_state.otp_time -= 1
+                        # 남은 횟수 표시
+                        st.write(f"남은 시도 횟수: {st.session_state.otp_time}")
 
-                    # 남은 횟수 표시
-                    st.write(f"남은 시도 횟수: {st.session_state.otp_time}")
                 else:
                     st.error("인증 횟수가 종료되었습니다.")
                     # 타이머 및 OTP 초기화
