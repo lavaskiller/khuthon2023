@@ -1,3 +1,9 @@
 openai==0.28
 deta
 streamlit_option_menu==0.3.6
+python-whois
+dnspython
+requests
+streamlit-extras
+numpy
+jellyfish
