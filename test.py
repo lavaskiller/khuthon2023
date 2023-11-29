@@ -11,7 +11,7 @@ from random import randint
 
 def app():
     # Usernm = []
-    deta = Deta("c0s6CpFN39n_3kGRmJCADFYJLkCndrWpsz6z2woBaJaY")
+    deta = Deta(st.secrets["db_key"])
 
     db = deta.Base("users_db")
 
