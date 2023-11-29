@@ -13,7 +13,7 @@ def app():
     # Usernm = []
     deta = Deta(st.secrets["db_key"])
 
-    db = deta.Base("users_db")
+    db = deta.Base(st.secrets["db_name"])
 
     def create_user(email, password, username):
         return db.put(
