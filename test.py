@@ -18,7 +18,7 @@ def app():
     def create_user(email, password, username):
         return db.put(
             {
-                "key": email,
+                "key": email.lower(),
                 "name": username,
                 "password": password,
                 "state": "begin",
@@ -35,7 +35,10 @@ def app():
         st.session_state.useremail = ""
 
     def f():
-        user = db.get(email)
+        try:
+            user = db.get(email)
+        except:
+            st.warning("로그인 실패")
 
         if user is None:
             st.warning("로그인 실패")
@@ -144,9 +147,11 @@ def app():
 
             if st.button("계정생성"):
                 with st.spinner("이메일 확인중..."):
-                    if st.session_state.otp == None and ck(email):
+                    if st.session_state.otp == None and ck(email.lower()):
                         # 이메일 인증 코드 전송
-                        st.session_state.otp = send_verification(username, email)
+                        st.session_state.otp = send_verification(
+                            username, email.lower()
+                        )
                     elif st.session_state.otp == None:
                         st.error("유효한 이메일이 아닙니다.")
 
@@ -159,7 +164,9 @@ def app():
                     # 인증번호 확인
                     if verify_button and st.session_state.otp == rec_otp:
                         with st.spinner("계정 생성중..."):
-                            create_user(email, st.session_state.password, username)
+                            create_user(
+                                email.lower(), st.session_state.password, username
+                            )
                             st.success("계정이 성공적으로 생성되었습니다.")
                             st.markdown("이메일과 비밀번호를 이용하여 로그인을 시도해주세요.")
                             st.balloons()
@@ -184,6 +191,6 @@ def app():
             st.button("로그인", on_click=f)
 
     if st.session_state.signout:
-        st.text("이름 " + st.session_state.username)
+        st.text("이름: " + st.session_state.username)
         st.text("이메일: " + st.session_state.useremail)
         st.button("로그아웃", on_click=t)
