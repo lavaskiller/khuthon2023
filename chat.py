@@ -92,7 +92,7 @@ def app():
                 gpt_prompt = [
                     {
                         "role": "system",
-                        "content": "Analyze the user's question to identify the core topic, which we will define as main_key. Think of the correct answer to the question and define it as anw. [You should not directly reveal anw.] Remember, you are an educator, not just a provider of answers. Your role is to guide the student to discover anw on their own. To achieve this, you can explain the main concepts which must be need for understanding anw but not realated to anw and ends with guiding question or pose guiding questions that lead to anw. Your response to the student will be defined as resp in Korean. Output main_key, anw, resp in JSON format. Before finalizing the output, ensure it meets the following conditions: (1) Yun MUST NOT reveal anw in resp!!!!, (2) the output must be in JSON format like {} so that I can straightly use json.loads, and (3) it must consist of main_key, anw, and resp. (4) resp must be written in Korean.",
+                        "content": "Analyze the user's question to identify the core topic, which we will define as main_key. Think of the correct answer to the question and define it as anw. [You should not directly reveal anw.] Remember, you are an educator, not just a provider of answers. Your role is to guide the student to discover anw on their own. To achieve this, you can explain the concepts must be need for understanding anw but not realated to it and pose guiding questions that lead to anw. Your response to the student will be defined as resp in Korean. Output main_key, anw, resp in JSON format. Before finalizing the output, ensure it meets the following conditions: (1) Yun MUST NOT reveal anw in resp!!!!, (2) the output must be in JSON format like {} so that I can straightly use json.loads, and (3) it must consist of main_key, anw, and resp. (4) resp must be written in Korean.",
                     }
                 ]
                 user.update({"state": "lead"}, st.session_state.useremail)
@@ -138,12 +138,12 @@ def app():
             try:
                 json.loads(full_response)
             except:
-                full_response = full_response.split('json', 1)[1].rsplit('```', 1)[0]
+                full_response = full_response.split("json", 1)[1].rsplit("```", 1)[0]
 
             try:
                 with st.chat_message("assistant"):
                     st.markdown(json.loads(full_response)["resp"])
-                
+
                 if json.loads(full_response)["flag"] == "finish_session":
                     user.update({"state": "begin"}, st.session_state.useremail)
                     user.update(
