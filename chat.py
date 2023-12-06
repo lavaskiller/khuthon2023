@@ -7,6 +7,17 @@ openai.api_key = st.secrets["api_key"]
 
 
 def app():
+     st.subheader("")
+    image = 'logo.png'
+
+    hide_streamlit_style = """
+            <style>
+            #MainMenu {visibility: hidden;}
+            footer {visibility: hidden;}
+            </style>
+            """
+    st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+
     def key():
         return datetime.now().strftime("%Y%m%d%H%M%S") + st.session_state.useremail
 
