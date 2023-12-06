@@ -7,8 +7,7 @@ openai.api_key = st.secrets["api_key"]
 
 
 def app():
-     st.subheader("")
-    image = 'logo.png'
+    st.subheader("")
 
     hide_streamlit_style = """
             <style>
