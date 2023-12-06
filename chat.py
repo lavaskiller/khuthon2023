@@ -135,10 +135,10 @@ def app():
                     st.error("응답 처리 중 오류 발생: {}".format(e))
                     raise
 
-            with st.chat_message("assistant"):
-                st.markdown(json.loads(full_response)["resp"])
-
             try:
+                with st.chat_message("assistant"):
+                    st.markdown(json.loads(full_response)["resp"])
+                
                 if json.loads(full_response)["flag"] == "finish_session":
                     user.update({"state": "begin"}, st.session_state.useremail)
                     user.update(
