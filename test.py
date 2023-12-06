@@ -10,6 +10,17 @@ from random import randint
 
 
 def app():
+    st.subheader("")
+    image = 'logo.png'
+
+    hide_streamlit_style = """
+            <style>
+            #MainMenu {visibility: hidden;}
+            footer {visibility: hidden;}
+            </style>
+            """
+    st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+
     # Usernm = []
     deta = Deta(st.secrets["db_key"])
 
