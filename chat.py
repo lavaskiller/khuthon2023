@@ -124,7 +124,7 @@ def app():
             with st.spinner("답변이 생성되는 중입니다..."):
                 try:
                     response = openai.ChatCompletion.create(
-                        model="gpt-4-turbo-1106", messages=gpt_prompt, stream=False
+                        model="gpt-4-0613", messages=gpt_prompt, stream=False
                     )
                     full_response = response["choices"][0]["message"]["content"]
                     user.update(
