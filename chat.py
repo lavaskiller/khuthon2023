@@ -136,6 +136,11 @@ def app():
                     raise
 
             try:
+                json.loads(full_response)
+            except:
+                full_response = full_response.split('json', 1)[1].rsplit('```', 1)[0]
+
+            try:
                 with st.chat_message("assistant"):
                     st.markdown(json.loads(full_response)["resp"])
                 
