@@ -121,66 +121,78 @@ def app():
             #     full_response += response.choices[0].delta.get("content", "")
             #     message_placeholder.markdown(full_response + "▌ ")
 
-            with st.spinner("답변이 생성되는 중입니다..."):
+            if (
+                user.get(st.session_state.useremail)["uses"]
+                > user.get(st.session_state.useremail)["limit"]
+            ):
+                with st.spinner("답변이 생성되는 중입니다..."):
+                    try:
+                        response = openai.ChatCompletion.create(
+                            model="gpt-4-0613", messages=gpt_prompt, stream=False
+                        )
+                        full_response = response["choices"][0]["message"]["content"]
+                        user.update(
+                            {"uses": user.get(st.session_state.useremail)["uses"] + 1},
+                            st.session_state.useremail,
+                        )
+                    except Exception as e:
+                        st.error("응답 처리 중 오류 발생: {}".format(e))
+                        raise
+
                 try:
-                    response = openai.ChatCompletion.create(
-                        model="gpt-4-0613", messages=gpt_prompt, stream=False
-                    )
-                    full_response = response["choices"][0]["message"]["content"]
-                    user.update(
-                        {"uses": user.get(st.session_state.useremail)["uses"] + 1},
-                        st.session_state.useremail,
-                    )
-                except Exception as e:
-                    st.error("응답 처리 중 오류 발생: {}".format(e))
-                    raise
+                    json.loads(full_response)
+                except:
+                    full_response = full_response.split("json", 1)[1].rsplit("```", 1)[
+                        0
+                    ]
 
-            try:
-                json.loads(full_response)
-            except:
-                full_response = full_response.split("json", 1)[1].rsplit("```", 1)[0]
+                try:
+                    with st.chat_message("assistant"):
+                        st.markdown(json.loads(full_response)["resp"])
 
-            try:
-                with st.chat_message("assistant"):
-                    st.markdown(json.loads(full_response)["resp"])
+                    if json.loads(full_response)["flag"] == "finish_session":
+                        user.update({"state": "begin"}, st.session_state.useremail)
+                        user.update(
+                            {
+                                "cnt_qus": user.get(st.session_state.useremail)[
+                                    "cnt_qus"
+                                ]
+                                + 1
+                            },
+                            st.session_state.useremail,
+                        )
+                        for item in sys.fetch(
+                            {"user": st.session_state.useremail}
+                        ).items:
+                            sys.delete(item["key"])
 
-                if json.loads(full_response)["flag"] == "finish_session":
-                    user.update({"state": "begin"}, st.session_state.useremail)
-                    user.update(
-                        {
-                            "cnt_qus": user.get(st.session_state.useremail)["cnt_qus"]
-                            + 1
-                        },
-                        st.session_state.useremail,
-                    )
-                    for item in sys.fetch({"user": st.session_state.useremail}).items:
-                        sys.delete(item["key"])
+                except:
+                    print("Failed to")
 
-            except:
-                print("Failed to")
-
-            sys.put(
-                {
-                    "key": key(),
-                    "user": st.session_state.useremail,
-                    "role": "assistant",
-                    "content": full_response,
-                }
-            )
-            sys2.put(
-                {
-                    "key": key(),
-                    "user": st.session_state.useremail,
-                    "role": "assistant",
-                    "content": full_response,
-                }
-            )
-            chat.put(
-                {
-                    "key": key(),
-                    "user": st.session_state.useremail,
-                    "role": "assistant",
-                    "content": json.loads(full_response)["resp"],
-                }
-            )
-            # print(chat.fetch({"user": st.session_state.useremail}).items)
+                sys.put(
+                    {
+                        "key": key(),
+                        "user": st.session_state.useremail,
+                        "role": "assistant",
+                        "content": full_response,
+                    }
+                )
+                sys2.put(
+                    {
+                        "key": key(),
+                        "user": st.session_state.useremail,
+                        "role": "assistant",
+                        "content": full_response,
+                    }
+                )
+                chat.put(
+                    {
+                        "key": key(),
+                        "user": st.session_state.useremail,
+                        "role": "assistant",
+                        "content": json.loads(full_response)["resp"],
+                    }
+                )
+                # print(chat.fetch({"user": st.session_state.useremail}).items)
+            else:
+                st.warning("사용제한 5회를 초과하였습니다. 이용해주셔서 감사합니다.")

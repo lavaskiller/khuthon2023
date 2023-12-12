@@ -11,7 +11,7 @@ from random import randint
 
 def app():
     st.subheader("")
-    image = 'logo.png'
+    image = "logo.png"
 
     hide_streamlit_style = """
             <style>
@@ -38,6 +38,7 @@ def app():
                     "state": "begin",
                     "cnt_qus": 1,
                     "uses": 0,
+                    "limit": 5,
                 }
             )
             return True
@@ -50,6 +51,7 @@ def app():
                     "state": user["state"],
                     "cnt_qus": user["cnt_qus"],
                     "uses": user["uses"],
+                    "limit": 5,
                 }
             )
             return False
