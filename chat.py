@@ -123,7 +123,7 @@ def app():
 
             if (
                 user.get(st.session_state.useremail)["uses"]
-                > user.get(st.session_state.useremail)["limit"]
+                <= user.get(st.session_state.useremail)["limit"]
             ):
                 with st.spinner("답변이 생성되는 중입니다..."):
                     try:
